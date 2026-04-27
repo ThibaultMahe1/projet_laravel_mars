@@ -11,13 +11,23 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+use App\Http\Controllers\MessageController;
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::get('/messages/fetch', [MessageController::class, 'fetch'])->name('messages.fetch');
+    Route::post('/messages/typing', [MessageController::class, 'typing'])->name('messages.typing');
+    Route::get('/messages/archives', [MessageController::class, 'archives'])->name('messages.archives');
+    Route::get('/messages/archives/{filename}', [MessageController::class, 'showArchive'])->name('messages.archive.show');
+    Route::post('/messages/archives/force', [MessageController::class, 'forceArchive'])->name('messages.archive.force');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

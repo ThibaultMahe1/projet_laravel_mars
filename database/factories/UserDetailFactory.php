@@ -19,6 +19,7 @@ class UserDetailFactory extends Factory
     {
         return [
             'biome_id' => fake()->numberBetween(1, 100),
+            'dome' => fake()->randomElement(['A', 'B']),
             'blood_group' => fake()->randomElement(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']),
             'clearance_level' => fake()->numberBetween(1, 5),
             'logs' => fake()->optional()->paragraphs(3, true),

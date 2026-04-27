@@ -14,6 +14,7 @@ class UserDetail extends Model
     protected $fillable = [
         'user_id',
         'biome_id',
+        'dome',
         'blood_group',
         'clearance_level',
         'logs',
