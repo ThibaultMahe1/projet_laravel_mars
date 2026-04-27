@@ -5,28 +5,10 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" x-data="sensorData()">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            
-            <!-- Affichage administrateur : sélection de la cible -->
-            @can('manage-users')
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-medium text-mars-800 mb-4">Aperçu Général Administratif</h3>
-                <div class="flex items-center space-x-4">
-                    <label for="user-select" class="text-sm font-medium text-gray-700">Sélectionnez le colon à monitorer :</label>
-                    <select id="user-select" x-model="selectedUser" class="mt-1 block max-w-md rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-mars-500 focus:outline-none focus:ring-mars-500 sm:text-sm">
-                        <option value="Me">Vous même ({{ Auth::user()->name }})</option>
-                        @foreach (\App\Models\User::all() as $u)
-                            @if($u->id !== Auth::id())
-                                <option value="{{ $u->name }}">Colon : {{ $u->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            @endcan
+    <div class="py-6 h-[calc(100vh-80px)] flex flex-col" x-data="sensorData()">
+        <div class="w-full h-full mx-auto sm:px-6 lg:px-8 flex flex-col space-y-6">
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8 relative">
+            <div class="bg-white flex flex-col flex-grow overflow-hidden shadow-sm sm:rounded-lg p-8 relative">
                 
                 <!-- Overlay de synchronisation -->
                 <div x-cloak x-show="syncing" x-transition.opacity.duration.300ms class="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center rounded-lg">
@@ -52,13 +34,28 @@
                             Liaison biocapteurs stabilisée (Latence: <span x-text="ping"></span> ms)
                         </p>
                     </div>
+
+                    @can('manage-users')
+                    <!-- Sélection dynamique discrète pour administrateur -->
+                    <div class="flex items-center space-x-3 z-20">
+                        <label for="user-select" class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Cible active :</label>
+                        <select id="user-select" x-model="selectedUser" class="block w-48 rounded-md border-gray-200 bg-gray-50 py-1.5 pl-3 pr-8 text-sm font-medium text-mars-800 shadow-sm focus:border-mars-500 focus:outline-none focus:ring-mars-500 focus:bg-white transition-colors cursor-pointer">
+                            <option value="Me">Vous-même</option>
+                            @foreach (\App\Models\User::all() as $u)
+                                @if($u->id !== Auth::id())
+                                    <option value="{{ $u->name }}">Colon : {{ $u->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                    @endcan
                 </div>
 
                 <!-- Grille des statistiques -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-300" :class="{'opacity-25 blur-sm': syncing}">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 transition-all duration-300 flex-grow" :class="{'opacity-25 blur-sm': syncing}">
                     
                     <!-- Colonne 3D (Projection holographique) -->
-                    <div class="lg:col-span-2 flex flex-col items-center justify-center bg-mars-950 border border-mars-800 rounded-xl p-4 shadow-[0_0_30px_rgba(253,77,12,0.15)] relative overflow-hidden h-96 lg:h-[600px] order-last lg:order-first">
+                    <div class="lg:col-span-3 flex flex-col items-center justify-center bg-mars-950 border border-mars-800 rounded-xl p-4 shadow-[0_0_30px_rgba(253,77,12,0.15)] relative overflow-hidden h-[500px] lg:h-full min-h-[600px] order-last lg:order-first">
                         <div class="text-xs text-mars-400 uppercase tracking-widest font-mono shrink-0 mb-2 w-full text-center z-10 absolute top-4">Scan Biométrique 3D</div>
                         
                         <!-- Récipient principal pour le canvas ThreeJS -->
